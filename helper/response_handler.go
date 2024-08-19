@@ -25,11 +25,18 @@ func InternalServerError(message string) *web.WebResponse {
 	return response
 }
 func UnprocessableEntity(message string, err interface{}) *web.WebResponse {
+
 	errors := []string{}
 	for _, e := range err.(validator.ValidationErrors) {
 		errors = append(errors, e.Error())
 	}
 	errorMessage := gin.H{"errors": errors}
+	response := web.APIResponse(message, http.StatusUnprocessableEntity, "Unprocessable Entity", errorMessage)
+	return response
+}
+func UnprocessableEntityString(message string, err string) *web.WebResponse {
+
+	errorMessage := gin.H{"errors": err}
 	response := web.APIResponse(message, http.StatusUnprocessableEntity, "Unprocessable Entity", errorMessage)
 	return response
 }

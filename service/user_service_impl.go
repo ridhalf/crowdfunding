@@ -5,6 +5,7 @@ import (
 	"crowdfunding/model/domain"
 	"crowdfunding/model/web"
 	"crowdfunding/repository"
+	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
@@ -17,7 +18,7 @@ func NewUserServiceImpl(repository repository.UserRepository) *UserServiceImpl {
 	return &UserServiceImpl{repository: repository}
 }
 
-func (service UserServiceImpl) RegisterUser(request web.UserRequestRegister) (domain.User, error) {
+func (service UserServiceImpl) Register(request web.UserRequestRegister) (domain.User, error) {
 	//TODO implement me
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.MinCost)
 	helper.PanicIfError(err)
@@ -39,4 +40,25 @@ func (service UserServiceImpl) RegisterUser(request web.UserRequestRegister) (do
 	save, err := service.repository.Save(user)
 	helper.PanicIfError(err)
 	return save, nil
+}
+
+func (service UserServiceImpl) Login(request web.UserRequestLogin) (domain.User, error) {
+	//TODO implement me
+	email := request.Email
+	password := request.Password
+
+	user, err := service.repository.FindByEmail(email)
+	if err != nil {
+		return user, err
+	}
+	if user.ID == 0 {
+		return user, errors.New("the email or password you entered is incorrect")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
+		return user, errors.New("the email or password you entered is incorrect")
+	}
+
+	return user, nil
 }

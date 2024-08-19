@@ -20,3 +20,12 @@ func (repository UserRepositoryImpl) Save(user domain.User) (domain.User, error)
 	helper.PanicIfError(err)
 	return user, nil
 }
+
+func (repository UserRepositoryImpl) FindByEmail(email string) (domain.User, error) {
+	user := domain.User{}
+	err := repository.db.Where("email = ?", email).Find(&user).Error
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
