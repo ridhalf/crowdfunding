@@ -40,3 +40,7 @@ func UnprocessableEntityString(message string, err string) *web.WebResponse {
 	response := web.APIResponse(message, http.StatusUnprocessableEntity, "Unprocessable Entity", errorMessage)
 	return response
 }
+func UnAuthorized(message string) *web.WebResponse {
+	response := web.APIResponse(message, http.StatusUnauthorized, "Unauthorized", nil)
+	return response
+}

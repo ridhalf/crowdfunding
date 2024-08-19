@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"crowdfunding/helper"
 	"crowdfunding/model/domain"
 	"gorm.io/gorm"
 )
@@ -17,7 +16,9 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 func (repository UserRepositoryImpl) Save(user domain.User) (domain.User, error) {
 	//TODO implement me
 	err := repository.db.Create(&user).Error
-	helper.PanicIfError(err)
+	if err != nil {
+		return user, err
+	}
 	return user, nil
 }
 

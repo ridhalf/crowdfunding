@@ -3,6 +3,7 @@ package controller
 import (
 	"crowdfunding/auth"
 	"crowdfunding/helper"
+	"crowdfunding/model/domain"
 	"crowdfunding/model/web"
 	"crowdfunding/service"
 	"github.com/gin-gonic/gin"
@@ -32,10 +33,16 @@ func (controller *UserControllerImpl) Register(ctx *gin.Context) {
 	}
 
 	user, err := controller.userService.Register(registerRequest)
-	controller.registerFailedResponse(err, ctx)
+	if err != nil {
+		controller.registerFailedResponse(ctx)
+		return
+	}
 
 	token, err := controller.authJwt.GenerateToken(user.ID)
-	controller.registerFailedResponse(err, ctx)
+	if err != nil {
+		controller.registerFailedResponse(ctx)
+		return
+	}
 
 	response := web.ToUserResponse(user, token)
 	result := helper.Ok("Account has been registered", response)
@@ -99,36 +106,40 @@ func (controller *UserControllerImpl) IsEmailAvailable(ctx *gin.Context) {
 
 func (controller *UserControllerImpl) UploadAvatar(ctx *gin.Context) {
 	file, err := ctx.FormFile("avatar")
-	controller.uploadAvatarFailedResponse(err, ctx)
+	if err != nil {
+		controller.uploadAvatarFailedResponse(ctx)
+		return
+	}
 
 	//=====DAPAT DARI JWT
-	userID := 7
+	user := ctx.MustGet("user").(domain.User)
+	userID := user.ID
 	//=====
 
 	path := "images/" + strconv.Itoa(userID) + "-" + file.Filename
 	err = ctx.SaveUploadedFile(file, path)
-	controller.uploadAvatarFailedResponse(err, ctx)
+	if err != nil {
+		controller.uploadAvatarFailedResponse(ctx)
+		return
+	}
 
 	_, err = controller.userService.SaveAvatar(userID, path)
-	controller.uploadAvatarFailedResponse(err, ctx)
+	if err != nil {
+		controller.uploadAvatarFailedResponse(ctx)
+		return
+	}
 
 	data := gin.H{"is_uploaded": true}
 	result := helper.Ok("avatar uploaded successfully", data)
 	ctx.JSON(http.StatusOK, result)
 	return
 }
-func (controller *UserControllerImpl) uploadAvatarFailedResponse(err error, ctx *gin.Context) {
-	if err != nil {
-		data := gin.H{"is_uploaded": false}
-		response := helper.BadRequest("upload avatar failed", data)
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
+func (controller *UserControllerImpl) uploadAvatarFailedResponse(ctx *gin.Context) {
+	data := gin.H{"is_uploaded": false}
+	response := helper.BadRequest("upload avatar failed", data)
+	ctx.JSON(http.StatusBadRequest, response)
 }
-func (controller *UserControllerImpl) registerFailedResponse(err error, ctx *gin.Context) {
-	if err != nil {
-		response := helper.BadRequest("register account failed", nil)
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
+func (controller *UserControllerImpl) registerFailedResponse(ctx *gin.Context) {
+	response := helper.BadRequest("register account failed", nil)
+	ctx.JSON(http.StatusBadRequest, response)
 }

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"crowdfunding/helper"
 	"crowdfunding/model/domain"
 	"crowdfunding/model/web"
 	"crowdfunding/repository"
@@ -20,11 +19,14 @@ func NewUserServiceImpl(userRepository repository.UserRepository) UserService {
 }
 
 func (service UserServiceImpl) Register(request web.UserRequestRegister) (domain.User, error) {
-	//TODO implement me
+	user := domain.User{}
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.MinCost)
-	helper.PanicIfError(err)
 
-	user := domain.User{
+	if err != nil {
+		return user, err
+	}
+
+	user = domain.User{
 		Name:         request.Name,
 		Email:        request.Email,
 		Occupation:   request.Occupation,
@@ -33,7 +35,9 @@ func (service UserServiceImpl) Register(request web.UserRequestRegister) (domain
 	}
 
 	save, err := service.UserRepository.Save(user)
-	helper.PanicIfError(err)
+	if err != nil {
+		return user, err
+	}
 	return save, nil
 }
 
@@ -76,7 +80,6 @@ func (service UserServiceImpl) SaveAvatar(ID int, fileLocation string) (domain.U
 	if err != nil {
 		return user, err
 	}
-	helper.PanicIfError(err)
 	user.AvatarFileName = fileLocation
 
 	result, err := service.UserRepository.Update(user)
@@ -84,4 +87,16 @@ func (service UserServiceImpl) SaveAvatar(ID int, fileLocation string) (domain.U
 		return user, err
 	}
 	return result, nil
+}
+
+func (service UserServiceImpl) FindById(ID int) (domain.User, error) {
+	user := domain.User{}
+	user, err := service.UserRepository.FindByID(ID)
+	if err != nil {
+		return user, err
+	}
+	if user.ID == 0 {
+		return user, errors.New("the id of the user is not found")
+	}
+	return user, nil
 }
