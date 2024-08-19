@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"crowdfunding/auth"
 	"crowdfunding/helper"
 	"crowdfunding/model/web"
 	"crowdfunding/service"
@@ -11,11 +12,13 @@ import (
 
 type UserControllerImpl struct {
 	userService service.UserService
+	authJwt     auth.JwtService
 }
 
-func NewUserController(userService service.UserService) UserController {
+func NewUserController(userService service.UserService, authJwt auth.JwtService) UserController {
 	return &UserControllerImpl{
 		userService: userService,
+		authJwt:     authJwt,
 	}
 }
 
@@ -29,13 +32,12 @@ func (controller *UserControllerImpl) Register(ctx *gin.Context) {
 	}
 
 	user, err := controller.userService.Register(registerRequest)
-	if err != nil {
-		response := helper.BadRequest("register account failed", nil)
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
+	controller.registerFailedResponse(err, ctx)
 
-	response := web.ToUserResponse(user, "token")
+	token, err := controller.authJwt.GenerateToken(user.ID)
+	controller.registerFailedResponse(err, ctx)
+
+	response := web.ToUserResponse(user, token)
 	result := helper.Ok("Account has been registered", response)
 	ctx.JSON(http.StatusOK, result)
 }
@@ -49,13 +51,22 @@ func (controller *UserControllerImpl) Login(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
+
 	login, err := controller.userService.Login(loginRequest)
 	if err != nil {
 		response := helper.UnprocessableEntityString("login account failed", err.Error())
 		ctx.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
-	response := web.ToUserResponse(login, "token")
+
+	token, err := controller.authJwt.GenerateToken(login.ID)
+	if err != nil {
+		response := helper.BadRequest("login account failed", nil)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := web.ToUserResponse(login, token)
 	result := helper.Ok(`login successful. welcome back!`, response)
 	ctx.JSON(http.StatusOK, result)
 }
@@ -110,6 +121,13 @@ func (controller *UserControllerImpl) uploadAvatarFailedResponse(err error, ctx 
 	if err != nil {
 		data := gin.H{"is_uploaded": false}
 		response := helper.BadRequest("upload avatar failed", data)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+}
+func (controller *UserControllerImpl) registerFailedResponse(err error, ctx *gin.Context) {
+	if err != nil {
+		response := helper.BadRequest("register account failed", nil)
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
