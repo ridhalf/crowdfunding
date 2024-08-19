@@ -8,4 +8,5 @@ import (
 type UserService interface {
 	Register(request web.UserRequestRegister) (domain.User, error)
 	Login(request web.UserRequestLogin) (domain.User, error)
+	IsEmailAvailable(request web.UserRequestEmailCheck) (bool, error)
 }

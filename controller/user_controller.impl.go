@@ -12,7 +12,7 @@ type UserControllerImpl struct {
 	userService service.UserService
 }
 
-func NewUserControllerImpl(userService service.UserService) *UserControllerImpl {
+func NewUserController(userService service.UserService) UserController {
 	return &UserControllerImpl{
 		userService: userService,
 	}
@@ -56,5 +56,31 @@ func (controller *UserControllerImpl) Login(ctx *gin.Context) {
 	}
 	response := web.ToUserResponse(login, "token")
 	result := helper.Ok(`login successful. welcome back!`, response)
+	ctx.JSON(http.StatusOK, result)
+}
+
+func (controller *UserControllerImpl) IsEmailAvailable(ctx *gin.Context) {
+
+	emailCheck := web.UserRequestEmailCheck{}
+	err := ctx.ShouldBindJSON(&emailCheck)
+	if err != nil {
+		response := helper.UnprocessableEntity("email check failed", err)
+		ctx.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+	available, err := controller.userService.IsEmailAvailable(emailCheck)
+	if err != nil {
+		response := helper.UnprocessableEntityString("an unexpected error occurred. Please try again later", err.Error())
+		ctx.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+	data := gin.H{"is_available": available}
+	var metaString string
+	if available {
+		metaString = "email is available"
+	} else {
+		metaString = "email is not available"
+	}
+	result := helper.Ok(metaString, data)
 	ctx.JSON(http.StatusOK, result)
 }

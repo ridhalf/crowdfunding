@@ -10,15 +10,17 @@ import (
 	"time"
 )
 
-type UserServiceImpl struct {
-	repository repository.UserRepository
+type UserServiceImplementation struct {
+	UserRepository repository.UserRepository
 }
 
-func NewUserServiceImpl(repository repository.UserRepository) *UserServiceImpl {
-	return &UserServiceImpl{repository: repository}
+func NewUserServiceImpl(userRepository repository.UserRepository) UserService {
+	return &UserServiceImplementation{
+		UserRepository: userRepository,
+	}
 }
 
-func (service UserServiceImpl) Register(request web.UserRequestRegister) (domain.User, error) {
+func (service UserServiceImplementation) Register(request web.UserRequestRegister) (domain.User, error) {
 	//TODO implement me
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.MinCost)
 	helper.PanicIfError(err)
@@ -37,17 +39,17 @@ func (service UserServiceImpl) Register(request web.UserRequestRegister) (domain
 		UpdatedAt:    now,
 	}
 
-	save, err := service.repository.Save(user)
+	save, err := service.UserRepository.Save(user)
 	helper.PanicIfError(err)
 	return save, nil
 }
 
-func (service UserServiceImpl) Login(request web.UserRequestLogin) (domain.User, error) {
+func (service UserServiceImplementation) Login(request web.UserRequestLogin) (domain.User, error) {
 	//TODO implement me
 	email := request.Email
 	password := request.Password
 
-	user, err := service.repository.FindByEmail(email)
+	user, err := service.UserRepository.FindByEmail(email)
 	if err != nil {
 		return user, err
 	}
@@ -61,4 +63,16 @@ func (service UserServiceImpl) Login(request web.UserRequestLogin) (domain.User,
 	}
 
 	return user, nil
+}
+
+func (service UserServiceImplementation) IsEmailAvailable(request web.UserRequestEmailCheck) (bool, error) {
+	email := request.Email
+	user, err := service.UserRepository.FindByEmail(email)
+	if err != nil {
+		return false, err
+	}
+	if user.ID == 0 {
+		return true, nil
+	}
+	return false, nil
 }

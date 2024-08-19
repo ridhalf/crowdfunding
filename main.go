@@ -12,14 +12,15 @@ import (
 func main() {
 	gin.SetMode(gin.DebugMode)
 	db := app.NewDB()
-	userRepository := repository.NewUserRepositoryImpl(db)
+	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserServiceImpl(userRepository)
-	userController := controller.NewUserControllerImpl(userService)
+	userController := controller.NewUserController(userService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
 	api.POST("/users", userController.Register)
 	api.POST("/users/login", userController.Login)
+	api.POST("/users/email_checkers", userController.IsEmailAvailable)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)
