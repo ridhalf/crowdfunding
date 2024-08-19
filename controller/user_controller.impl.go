@@ -6,6 +6,7 @@ import (
 	"crowdfunding/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type UserControllerImpl struct {
@@ -29,7 +30,7 @@ func (controller *UserControllerImpl) Register(ctx *gin.Context) {
 
 	user, err := controller.userService.Register(registerRequest)
 	if err != nil {
-		response := helper.BadRequest("register account failed")
+		response := helper.BadRequest("register account failed", nil)
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -83,4 +84,33 @@ func (controller *UserControllerImpl) IsEmailAvailable(ctx *gin.Context) {
 	}
 	result := helper.Ok(metaString, data)
 	ctx.JSON(http.StatusOK, result)
+}
+
+func (controller *UserControllerImpl) UploadAvatar(ctx *gin.Context) {
+	file, err := ctx.FormFile("avatar")
+	controller.uploadAvatarFailedResponse(err, ctx)
+
+	//=====DAPAT DARI JWT
+	userID := 7
+	//=====
+
+	path := "images/" + strconv.Itoa(userID) + "-" + file.Filename
+	err = ctx.SaveUploadedFile(file, path)
+	controller.uploadAvatarFailedResponse(err, ctx)
+
+	_, err = controller.userService.SaveAvatar(userID, path)
+	controller.uploadAvatarFailedResponse(err, ctx)
+
+	data := gin.H{"is_uploaded": true}
+	result := helper.Ok("avatar uploaded successfully", data)
+	ctx.JSON(http.StatusOK, result)
+	return
+}
+func (controller *UserControllerImpl) uploadAvatarFailedResponse(err error, ctx *gin.Context) {
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.BadRequest("upload avatar failed", data)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
 }

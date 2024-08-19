@@ -29,3 +29,21 @@ func (repository UserRepositoryImpl) FindByEmail(email string) (domain.User, err
 	}
 	return user, nil
 }
+
+func (repository UserRepositoryImpl) FindByID(ID int) (domain.User, error) {
+	//TODO implement me
+	user := domain.User{}
+	err := repository.db.Where("id = ?", ID).Find(&user).Error
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+func (repository UserRepositoryImpl) Update(user domain.User) (domain.User, error) {
+	err := repository.db.Save(&user).Error
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}

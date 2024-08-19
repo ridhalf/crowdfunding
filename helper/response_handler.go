@@ -12,8 +12,8 @@ func Ok(message string, data interface{}) *web.WebResponse {
 	return response
 }
 
-func BadRequest(message string) *web.WebResponse {
-	response := web.APIResponse(message, http.StatusBadRequest, "Bad Request", nil)
+func BadRequest(message string, data interface{}) *web.WebResponse {
+	response := web.APIResponse(message, http.StatusBadRequest, "Bad Request", data)
 	return response
 }
 func NotFound(message string) *web.WebResponse {

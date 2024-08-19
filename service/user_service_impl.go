@@ -7,26 +7,21 @@ import (
 	"crowdfunding/repository"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
-type UserServiceImplementation struct {
+type UserServiceImpl struct {
 	UserRepository repository.UserRepository
 }
 
 func NewUserServiceImpl(userRepository repository.UserRepository) UserService {
-	return &UserServiceImplementation{
+	return &UserServiceImpl{
 		UserRepository: userRepository,
 	}
 }
 
-func (service UserServiceImplementation) Register(request web.UserRequestRegister) (domain.User, error) {
+func (service UserServiceImpl) Register(request web.UserRequestRegister) (domain.User, error) {
 	//TODO implement me
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.MinCost)
-	helper.PanicIfError(err)
-
-	location, err := time.LoadLocation("Asia/Jakarta")
-	now := time.Now().In(location).Format("2006-01-02 15:04:05")
 	helper.PanicIfError(err)
 
 	user := domain.User{
@@ -35,8 +30,6 @@ func (service UserServiceImplementation) Register(request web.UserRequestRegiste
 		Occupation:   request.Occupation,
 		Role:         "user",
 		PasswordHash: string(password),
-		CreatedAt:    now,
-		UpdatedAt:    now,
 	}
 
 	save, err := service.UserRepository.Save(user)
@@ -44,7 +37,7 @@ func (service UserServiceImplementation) Register(request web.UserRequestRegiste
 	return save, nil
 }
 
-func (service UserServiceImplementation) Login(request web.UserRequestLogin) (domain.User, error) {
+func (service UserServiceImpl) Login(request web.UserRequestLogin) (domain.User, error) {
 	//TODO implement me
 	email := request.Email
 	password := request.Password
@@ -65,7 +58,7 @@ func (service UserServiceImplementation) Login(request web.UserRequestLogin) (do
 	return user, nil
 }
 
-func (service UserServiceImplementation) IsEmailAvailable(request web.UserRequestEmailCheck) (bool, error) {
+func (service UserServiceImpl) IsEmailAvailable(request web.UserRequestEmailCheck) (bool, error) {
 	email := request.Email
 	user, err := service.UserRepository.FindByEmail(email)
 	if err != nil {
@@ -75,4 +68,20 @@ func (service UserServiceImplementation) IsEmailAvailable(request web.UserReques
 		return true, nil
 	}
 	return false, nil
+}
+
+func (service UserServiceImpl) SaveAvatar(ID int, fileLocation string) (domain.User, error) {
+	id := ID
+	user, err := service.UserRepository.FindByID(id)
+	if err != nil {
+		return user, err
+	}
+	helper.PanicIfError(err)
+	user.AvatarFileName = fileLocation
+
+	result, err := service.UserRepository.Update(user)
+	if err != nil {
+		return user, err
+	}
+	return result, nil
 }

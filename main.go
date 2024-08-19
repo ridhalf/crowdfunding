@@ -20,7 +20,8 @@ func main() {
 	api := router.Group("/api/v1")
 	api.POST("/users", userController.Register)
 	api.POST("/users/login", userController.Login)
-	api.POST("/users/email_checkers", userController.IsEmailAvailable)
+	api.POST("/users/email_checker", userController.IsEmailAvailable)
+	api.POST("/users/avatar", userController.UploadAvatar)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)
