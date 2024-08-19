@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crowdfunding/helper"
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"os"
 )
@@ -23,4 +24,17 @@ func (service JwtServiceImpl) GenerateToken(userID int) (string, error) {
 	signedToken, err := token.SignedString(SecretKey)
 	helper.PanicIfError(err)
 	return signedToken, nil
+}
+
+func (service JwtServiceImpl) ValidateToken(token string) (*jwt.Token, error) {
+	parse, err := jwt.Parse(token, service.parse)
+	helper.PanicIfError(err)
+	return parse, nil
+}
+func (service JwtServiceImpl) parse(token *jwt.Token) (interface{}, error) {
+	_, ok := token.Method.(*jwt.SigningMethodHMAC)
+	if !ok {
+		return nil, errors.New("invalid token")
+	}
+	return []byte(os.Getenv("SECRET_KEY")), nil
 }

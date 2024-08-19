@@ -12,6 +12,7 @@ import (
 
 func main() {
 	gin.SetMode(gin.DebugMode)
+	app.Env()
 	db := app.NewDB()
 	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserServiceImpl(userRepository)
