@@ -13,7 +13,7 @@ func TestUserCreate(t *testing.T) {
 	db := app.NewDB()
 	userRepository := repository.NewUserRepositoryImpl(db)
 	userService := service.NewUserServiceImpl(userRepository)
-	user := web.UserCreateRequest{
+	user := web.UserRequestRegister{
 		Name:       "John Doe",
 		Occupation: "Programmer",
 		Email:      "john.doe@gmail.com",

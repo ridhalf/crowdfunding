@@ -18,7 +18,7 @@ func main() {
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
-	api.POST("/users", userController.RegisterUser)
+	api.POST("/users", userController.Register)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)

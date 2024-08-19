@@ -18,8 +18,8 @@ func NewUserControllerImpl(userService service.UserService) *UserControllerImpl 
 	}
 }
 
-func (controller *UserControllerImpl) RegisterUser(ctx *gin.Context) {
-	userCreateRequest := web.UserCreateRequest{}
+func (controller *UserControllerImpl) Register(ctx *gin.Context) {
+	userCreateRequest := web.UserRequestRegister{}
 	err := ctx.ShouldBindJSON(&userCreateRequest)
 	if err != nil {
 		response := helper.UnprocessableEntity("register account failed", err)

@@ -17,7 +17,7 @@ func NewUserServiceImpl(repository repository.UserRepository) *UserServiceImpl {
 	return &UserServiceImpl{repository: repository}
 }
 
-func (service UserServiceImpl) RegisterUser(request web.UserCreateRequest) (domain.User, error) {
+func (service UserServiceImpl) RegisterUser(request web.UserRequestRegister) (domain.User, error) {
 	//TODO implement me
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.MinCost)
 	helper.PanicIfError(err)

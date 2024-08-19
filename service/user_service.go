@@ -6,5 +6,5 @@ import (
 )
 
 type UserService interface {
-	RegisterUser(request web.UserCreateRequest) (domain.User, error)
+	RegisterUser(request web.UserRequestRegister) (domain.User, error)
 }
