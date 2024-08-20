@@ -2,6 +2,7 @@ package controller
 
 import (
 	"crowdfunding/helper"
+	"crowdfunding/model/web"
 	"crowdfunding/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -20,17 +21,13 @@ func NewCampaignController(campaignService service.CampaignService) CampaignCont
 
 func (controller CampaignControllerImpl) FindCampaigns(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Query("user_id"))
-	if err != nil {
-		controller.failedGetCampaigns(ctx)
-		return
-	}
 	campaigns, err := controller.campaignService.FindCampaigns(userID)
 	if err != nil {
 		controller.failedGetCampaigns(ctx)
 		return
 	}
-	response := helper.Ok("list all campaigns", campaigns)
-	ctx.JSON(http.StatusOK, response)
+	result := helper.Ok("list all campaigns", web.ToCampaignsResponse(campaigns))
+	ctx.JSON(http.StatusOK, result)
 }
 func (controller CampaignControllerImpl) failedGetCampaigns(ctx *gin.Context) {
 	response := helper.BadRequest("error to get campaigns", nil)
