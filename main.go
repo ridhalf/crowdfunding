@@ -18,15 +18,17 @@ func main() {
 
 	//repositories
 	userRepository := repository.NewUserRepository(db)
-
+	campaignRepository := repository.NewCampaignRepository(db)
 	//services
 	userService := service.NewUserServiceImpl(userRepository)
+	campaignService := service.NewCampaignService(campaignRepository)
 	//middleware
 	authJwt := auth.NewJwtService()
 	authMiddleware := middleware.AuthMiddleware(authJwt, userService)
 
 	//controllers
 	userController := controller.NewUserController(userService, authJwt)
+	campaignController := controller.NewCampaignController(campaignService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
@@ -34,6 +36,8 @@ func main() {
 	api.POST("/users/login", userController.Login)
 	api.POST("/users/email_checker", userController.IsEmailAvailable)
 	api.POST("/users/avatar", authMiddleware, userController.UploadAvatar)
+
+	api.GET("/campaigns", campaignController.FindCampaigns)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)
