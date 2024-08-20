@@ -15,10 +15,18 @@ func main() {
 	gin.SetMode(gin.DebugMode)
 	app.Env()
 	db := app.NewDB()
+
+	//repositories
 	userRepository := repository.NewUserRepository(db)
+
+	//services
 	userService := service.NewUserServiceImpl(userRepository)
+
+	//middleware
 	authJwt := auth.NewJwtService()
 	authMiddleware := middleware.AuthMiddleware(authJwt, userService)
+
+	//controllers
 	userController := controller.NewUserController(userService, authJwt)
 
 	router := gin.Default()
