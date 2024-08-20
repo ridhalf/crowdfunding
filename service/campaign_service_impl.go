@@ -16,7 +16,7 @@ func NewCampaignService(campaignRepository repository.CampaignRepository) Campai
 	}
 }
 
-func (service CampaignServiceImpl) FindByUserID(userID int) ([]domain.Campaign, error) {
+func (service CampaignServiceImpl) FindCampaigns(userID int) ([]domain.Campaign, error) {
 	if userID != 0 {
 		campaigns, err := service.campaignRepository.FindByUserID(userID)
 		return helper.ResultOrError(campaigns, err)
