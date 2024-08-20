@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"crowdfunding/helper"
 	"crowdfunding/model/domain"
 	"gorm.io/gorm"
 )
@@ -16,35 +17,23 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 func (repository UserRepositoryImpl) Save(user domain.User) (domain.User, error) {
 	//TODO implement me
 	err := repository.db.Create(&user).Error
-	if err != nil {
-		return user, err
-	}
-	return user, nil
+	return helper.ResultOrError(user, err)
 }
 
 func (repository UserRepositoryImpl) FindByEmail(email string) (domain.User, error) {
 	user := domain.User{}
 	err := repository.db.Where("email = ?", email).Find(&user).Error
-	if err != nil {
-		return user, err
-	}
-	return user, nil
+	return helper.ResultOrError(user, err)
 }
 
 func (repository UserRepositoryImpl) FindByID(ID int) (domain.User, error) {
 	//TODO implement me
 	user := domain.User{}
 	err := repository.db.Where("id = ?", ID).Find(&user).Error
-	if err != nil {
-		return user, err
-	}
-	return user, nil
+	return helper.ResultOrError(user, err)
 }
 
 func (repository UserRepositoryImpl) Update(user domain.User) (domain.User, error) {
 	err := repository.db.Save(&user).Error
-	if err != nil {
-		return user, err
-	}
-	return user, nil
+	return helper.ResultOrError(user, err)
 }

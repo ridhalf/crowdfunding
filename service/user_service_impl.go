@@ -1,6 +1,7 @@
 package service
 
 import (
+	"crowdfunding/helper"
 	"crowdfunding/model/domain"
 	"crowdfunding/model/web"
 	"crowdfunding/repository"
@@ -35,10 +36,8 @@ func (service UserServiceImpl) Register(request web.UserRequestRegister) (domain
 	}
 
 	save, err := service.UserRepository.Save(user)
-	if err != nil {
-		return user, err
-	}
-	return save, nil
+
+	return helper.ResultOrError(save, err)
 }
 
 func (service UserServiceImpl) Login(request web.UserRequestLogin) (domain.User, error) {
@@ -83,10 +82,8 @@ func (service UserServiceImpl) SaveAvatar(ID int, fileLocation string) (domain.U
 	user.AvatarFileName = fileLocation
 
 	result, err := service.UserRepository.Update(user)
-	if err != nil {
-		return user, err
-	}
-	return result, nil
+	return helper.ResultOrError(result, err)
+
 }
 
 func (service UserServiceImpl) FindById(ID int) (domain.User, error) {

@@ -21,7 +21,7 @@ func (service CampaignServiceImpl) FindAll() ([]domain.Campaign, error) {
 	return helper.ResultOrError(campaigns, err)
 }
 
-func (service CampaignServiceImpl) FindById(ID int) (domain.Campaign, error) {
+func (service CampaignServiceImpl) FindByUserID(ID int) (domain.Campaign, error) {
 	//TODO implement me
 	panic("implement me")
 }
