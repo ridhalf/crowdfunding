@@ -3,6 +3,7 @@ package service
 import (
 	"crowdfunding/helper"
 	"crowdfunding/model/domain"
+	"crowdfunding/model/web"
 	"crowdfunding/repository"
 )
 
@@ -23,4 +24,9 @@ func (service CampaignServiceImpl) FindAll(userID int) ([]domain.Campaign, error
 	}
 	campaigns, err := service.campaignRepository.FindAll()
 	return helper.ResultOrError(campaigns, err)
+}
+
+func (service CampaignServiceImpl) FindByID(request web.CampaignRequestByID) (*domain.Campaign, error) {
+	campaign, err := service.campaignRepository.FindByID(request.ID)
+	return helper.ResultOrError(campaign, err)
 }

@@ -40,6 +40,7 @@ func main() {
 	api.POST("/users/avatar", authMiddleware, userController.UploadAvatar)
 
 	api.GET("/campaigns", campaignController.FindAll)
+	api.GET("/campaigns/:id", campaignController.FindByID)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)
