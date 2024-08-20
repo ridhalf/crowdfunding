@@ -19,9 +19,9 @@ func NewCampaignController(campaignService service.CampaignService) CampaignCont
 	}
 }
 
-func (controller CampaignControllerImpl) FindCampaigns(ctx *gin.Context) {
+func (controller CampaignControllerImpl) FindAll(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Query("user_id"))
-	campaigns, err := controller.campaignService.FindCampaigns(userID)
+	campaigns, err := controller.campaignService.FindAll(userID)
 	if err != nil {
 		controller.failedGetCampaigns(ctx)
 		return

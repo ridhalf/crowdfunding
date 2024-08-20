@@ -39,7 +39,7 @@ func main() {
 	api.POST("/users/email_checker", userController.IsEmailAvailable)
 	api.POST("/users/avatar", authMiddleware, userController.UploadAvatar)
 
-	api.GET("/campaigns", campaignController.FindCampaigns)
+	api.GET("/campaigns", campaignController.FindAll)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)
