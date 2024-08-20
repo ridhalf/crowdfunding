@@ -16,12 +16,11 @@ func NewCampaignService(campaignRepository repository.CampaignRepository) Campai
 	}
 }
 
-func (service CampaignServiceImpl) FindAll() ([]domain.Campaign, error) {
+func (service CampaignServiceImpl) FindByUserID(userID int) ([]domain.Campaign, error) {
+	if userID != 0 {
+		campaigns, err := service.campaignRepository.FindByUserID(userID)
+		return helper.ResultOrError(campaigns, err)
+	}
 	campaigns, err := service.campaignRepository.FindAll()
 	return helper.ResultOrError(campaigns, err)
-}
-
-func (service CampaignServiceImpl) FindByUserID(ID int) (domain.Campaign, error) {
-	//TODO implement me
-	panic("implement me")
 }

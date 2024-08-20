@@ -22,9 +22,9 @@ func (repository CampaignRepositoryImpl) FindAll() ([]domain.Campaign, error) {
 	return helper.ResultOrError(campaigns, err)
 }
 
-func (repository CampaignRepositoryImpl) FindByUserID(userID int) (domain.Campaign, error) {
-	campaign := domain.Campaign{}
-	err := repository.db.Preload("CampaignImages", "campaign_images.is_primary = 1").First(&campaign, "user_id = ?", userID).Error
-	return helper.ResultOrError(campaign, err)
+func (repository CampaignRepositoryImpl) FindByUserID(userID int) ([]domain.Campaign, error) {
+	var campaigns []domain.Campaign
+	err := repository.db.Preload("CampaignImages", "campaign_images.is_primary = 1").Find(&campaigns, "user_id = ?", userID).Error
+	return helper.ResultOrError(campaigns, err)
 
 }

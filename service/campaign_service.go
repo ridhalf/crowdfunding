@@ -3,6 +3,5 @@ package service
 import "crowdfunding/model/domain"
 
 type CampaignService interface {
-	FindAll() ([]domain.Campaign, error)
-	FindByUserID(ID int) (domain.Campaign, error)
+	FindByUserID(userID int) ([]domain.Campaign, error)
 }

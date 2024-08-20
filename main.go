@@ -21,7 +21,6 @@ func main() {
 
 	//services
 	userService := service.NewUserServiceImpl(userRepository)
-
 	//middleware
 	authJwt := auth.NewJwtService()
 	authMiddleware := middleware.AuthMiddleware(authJwt, userService)
