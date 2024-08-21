@@ -26,7 +26,7 @@ func (service CampaignServiceImpl) FindAll(userID int) ([]domain.Campaign, error
 	return helper.ResultOrError(campaigns, err)
 }
 
-func (service CampaignServiceImpl) FindByID(request web.CampaignRequestByID) (*domain.Campaign, error) {
+func (service CampaignServiceImpl) FindByID(request web.CampaignRequestByID) (domain.Campaign, error) {
 	campaign, err := service.campaignRepository.FindByID(request.ID)
 	return helper.ResultOrError(campaign, err)
 }

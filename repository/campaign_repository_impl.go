@@ -29,8 +29,8 @@ func (repository CampaignRepositoryImpl) FindByUserID(userID int) ([]domain.Camp
 
 }
 
-func (repository CampaignRepositoryImpl) FindByID(ID int) (*domain.Campaign, error) {
-	var campaign *domain.Campaign
+func (repository CampaignRepositoryImpl) FindByID(ID int) (domain.Campaign, error) {
+	var campaign domain.Campaign
 	err := repository.db.Preload("User").Preload("CampaignImages").Where("id = ?", ID).Find(&campaign).Error
 	return helper.ResultOrError(campaign, err)
 }

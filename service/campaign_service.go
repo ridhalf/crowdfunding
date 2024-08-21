@@ -7,5 +7,5 @@ import (
 
 type CampaignService interface {
 	FindAll(userID int) ([]domain.Campaign, error)
-	FindByID(request web.CampaignRequestByID) (*domain.Campaign, error)
+	FindByID(request web.CampaignRequestByID) (domain.Campaign, error)
 }
