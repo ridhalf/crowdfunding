@@ -6,4 +6,5 @@ type CampaignRepository interface {
 	FindAll() ([]domain.Campaign, error)
 	FindByUserID(userID int) ([]domain.Campaign, error)
 	FindByID(ID int) (domain.Campaign, error)
+	Save(campaign domain.Campaign) (domain.Campaign, error)
 }

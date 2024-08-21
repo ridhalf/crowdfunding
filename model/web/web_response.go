@@ -10,7 +10,7 @@ type Meta struct {
 	Status  string `json:"status"`
 }
 
-func APIResponse(message string, code int, status string, data interface{}) *WebResponse {
+func APIResponse(message string, code int, status string, data interface{}) WebResponse {
 	meta := Meta{
 		Message: message,
 		Code:    code,
@@ -20,5 +20,5 @@ func APIResponse(message string, code int, status string, data interface{}) *Web
 		Meta: meta,
 		Data: data,
 	}
-	return &responseWeb
+	return responseWeb
 }

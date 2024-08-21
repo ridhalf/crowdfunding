@@ -34,3 +34,8 @@ func (repository CampaignRepositoryImpl) FindByID(ID int) (domain.Campaign, erro
 	err := repository.db.Preload("User").Preload("CampaignImages").Where("id = ?", ID).Find(&campaign).Error
 	return helper.ResultOrError(campaign, err)
 }
+
+func (repository CampaignRepositoryImpl) Save(campaign domain.Campaign) (domain.Campaign, error) {
+	err := repository.db.Create(&campaign).Error
+	return helper.ResultOrError(campaign, err)
+}

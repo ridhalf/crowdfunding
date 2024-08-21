@@ -2,6 +2,7 @@ package controller
 
 import (
 	"crowdfunding/helper"
+	"crowdfunding/model/domain"
 	"crowdfunding/model/web"
 	"crowdfunding/service"
 	"github.com/gin-gonic/gin"
@@ -44,6 +45,27 @@ func (controller CampaignControllerImpl) FindByID(ctx *gin.Context) {
 	}
 	response := web.ToCampaignDetailResponse(campaign)
 	result := helper.Ok("campaign detail", response)
+	ctx.JSON(http.StatusOK, result)
+}
+
+func (controller CampaignControllerImpl) Create(ctx *gin.Context) {
+	requestCampaign := web.CampaignRequestCreate{}
+	err := ctx.ShouldBindJSON(&requestCampaign)
+	if err != nil {
+		result := helper.UnprocessableEntity("failed to create campaign", err)
+		ctx.JSON(http.StatusUnprocessableEntity, result)
+		return
+	}
+	user := ctx.MustGet("user").(domain.User)
+	requestCampaign.User = user
+
+	create, err := controller.campaignService.Create(requestCampaign)
+	if err != nil {
+		result := helper.UnprocessableEntity("failed to create campaign", err)
+		ctx.JSON(http.StatusUnprocessableEntity, result)
+	}
+	response := web.ToCampaignResponse(create)
+	result := helper.Ok("save campaign", response)
 	ctx.JSON(http.StatusOK, result)
 }
 

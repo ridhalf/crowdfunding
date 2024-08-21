@@ -28,7 +28,7 @@ type CampaignImageResponse struct {
 	IsPrimary bool   `json:"is_primary"`
 }
 
-func ToCampaignDetailResponse(campaign *domain.Campaign) CampaignDetailResponse {
+func ToCampaignDetailResponse(campaign domain.Campaign) CampaignDetailResponse {
 	path := ""
 	var perks []string
 	if len(campaign.CampaignImages) > 0 {
