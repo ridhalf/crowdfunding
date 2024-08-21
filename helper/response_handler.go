@@ -7,24 +7,24 @@ import (
 	"net/http"
 )
 
-func Ok(message string, data interface{}) *web.WebResponse {
+func Ok(message string, data interface{}) web.WebResponse {
 	response := web.APIResponse(message, http.StatusOK, "OK", data)
 	return response
 }
 
-func BadRequest(message string, data interface{}) *web.WebResponse {
+func BadRequest(message string, data interface{}) web.WebResponse {
 	response := web.APIResponse(message, http.StatusBadRequest, "Bad Request", data)
 	return response
 }
-func NotFound(message string) *web.WebResponse {
+func NotFound(message string) web.WebResponse {
 	response := web.APIResponse(message, http.StatusNotFound, "Not Found", nil)
 	return response
 }
-func InternalServerError(message string) *web.WebResponse {
+func InternalServerError(message string) web.WebResponse {
 	response := web.APIResponse(message, http.StatusInternalServerError, "Internal Server Error", nil)
 	return response
 }
-func UnprocessableEntity(message string, err interface{}) *web.WebResponse {
+func UnprocessableEntity(message string, err interface{}) web.WebResponse {
 
 	errors := []string{}
 	for _, e := range err.(validator.ValidationErrors) {
@@ -34,13 +34,13 @@ func UnprocessableEntity(message string, err interface{}) *web.WebResponse {
 	response := web.APIResponse(message, http.StatusUnprocessableEntity, "Unprocessable Entity", errorMessage)
 	return response
 }
-func UnprocessableEntityString(message string, err string) *web.WebResponse {
+func UnprocessableEntityString(message string, err string) web.WebResponse {
 
 	errorMessage := gin.H{"errors": err}
 	response := web.APIResponse(message, http.StatusUnprocessableEntity, "Unprocessable Entity", errorMessage)
 	return response
 }
-func UnAuthorized(message string) *web.WebResponse {
+func UnAuthorized(message string) web.WebResponse {
 	response := web.APIResponse(message, http.StatusUnauthorized, "Unauthorized", nil)
 	return response
 }
