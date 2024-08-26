@@ -44,3 +44,7 @@ func UnAuthorized(message string) web.WebResponse {
 	response := web.APIResponse(message, http.StatusUnauthorized, "Unauthorized", nil)
 	return response
 }
+func Forbidden(message string, data interface{}) web.WebResponse {
+	response := web.APIResponse(message, http.StatusForbidden, "Forbidden", data)
+	return response
+}

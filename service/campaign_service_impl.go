@@ -5,6 +5,7 @@ import (
 	"crowdfunding/model/domain"
 	"crowdfunding/model/web"
 	"crowdfunding/repository"
+	"errors"
 	"github.com/gosimple/slug"
 	"strconv"
 )
@@ -47,4 +48,22 @@ func (service CampaignServiceImpl) Create(request web.CampaignRequestCreate) (do
 	result, err := service.campaignRepository.Save(campaign)
 	return helper.ResultOrError(result, err)
 
+}
+
+func (service CampaignServiceImpl) Update(campaignID web.CampaignRequestByID, request web.CampaignRequestCreate) (domain.Campaign, error) {
+	campaign, err := service.campaignRepository.FindByID(campaignID.ID)
+	if err != nil {
+		return helper.ResultOrError(campaign, err)
+	}
+
+	if campaign.User.ID != request.User.ID {
+		return helper.ResultOrError(campaign, errors.New("user is not the owner of the campaign"))
+	}
+	campaign.Name = request.Name
+	campaign.ShortDescription = request.ShortDescription
+	campaign.Description = request.Description
+	campaign.Perks = request.Perks
+	campaign.GoalAmount = request.GoalAmount
+	result, err := service.campaignRepository.Update(campaign)
+	return helper.ResultOrError(result, err)
 }

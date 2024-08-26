@@ -42,6 +42,7 @@ func main() {
 	api.GET("/campaigns", campaignController.FindAll)
 	api.GET("/campaigns/:id", campaignController.FindByID)
 	api.POST("/campaigns", authMiddleware, campaignController.Create)
+	api.PUT("/campaigns/:id", authMiddleware, campaignController.Update)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)
