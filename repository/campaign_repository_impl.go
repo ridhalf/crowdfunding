@@ -44,3 +44,16 @@ func (repository CampaignRepositoryImpl) Update(campaign domain.Campaign) (domai
 	err := repository.db.Save(&campaign).Error
 	return helper.ResultOrError(campaign, err)
 }
+
+func (repository CampaignRepositoryImpl) CreateImage(image domain.CampaignImage) (domain.CampaignImage, error) {
+	err := repository.db.Create(&image).Error
+	return helper.ResultOrError(image, err)
+}
+
+func (repository CampaignRepositoryImpl) MarkAllImageNonPrimary(ID int) (bool, error) {
+	err := repository.db.Model(&domain.CampaignImage{}).Where("id = ?", ID).Update("is_primary", false).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

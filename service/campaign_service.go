@@ -10,4 +10,5 @@ type CampaignService interface {
 	FindByID(request web.CampaignRequestByID) (domain.Campaign, error)
 	Create(request web.CampaignRequestCreate) (domain.Campaign, error)
 	Update(campaignID web.CampaignRequestByID, request web.CampaignRequestCreate) (domain.Campaign, error)
+	CreateCampaignImage(request web.CampaignImageCreate, fileLocation string) (domain.CampaignImage, error)
 }

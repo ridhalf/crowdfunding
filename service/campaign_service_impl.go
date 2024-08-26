@@ -67,3 +67,28 @@ func (service CampaignServiceImpl) Update(campaignID web.CampaignRequestByID, re
 	result, err := service.campaignRepository.Update(campaign)
 	return helper.ResultOrError(result, err)
 }
+
+func (service CampaignServiceImpl) CreateCampaignImage(request web.CampaignImageCreate, fileLocation string) (domain.CampaignImage, error) {
+	campaign, err := service.campaignRepository.FindByID(request.CampaignID)
+	if err != nil {
+		return domain.CampaignImage{}, err
+	}
+
+	if campaign.UserID != request.User.ID {
+		return domain.CampaignImage{}, errors.New("user is not the owner of the campaign")
+	}
+
+	if request.IsPrimary {
+		_, err := service.campaignRepository.MarkAllImageNonPrimary(request.CampaignID)
+		if err != nil {
+			return helper.ResultOrError(domain.CampaignImage{}, err)
+		}
+	}
+	campaignImage := domain.CampaignImage{
+		CampaignID: request.CampaignID,
+		IsPrimary:  request.IsPrimary,
+		FileName:   fileLocation,
+	}
+	image, err := service.campaignRepository.CreateImage(campaignImage)
+	return helper.ResultOrError(image, err)
+}

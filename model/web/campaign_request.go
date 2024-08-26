@@ -13,3 +13,8 @@ type CampaignRequestCreate struct {
 	Perks            string      `json:"perks" binding:"required"`
 	User             domain.User `json:"user"`
 }
+type CampaignImageCreate struct {
+	CampaignID int         `form:"campaign_id" binding:"required"`
+	IsPrimary  bool        `form:"is_primary" binding:"required"`
+	User       domain.User `json:"user"`
+}

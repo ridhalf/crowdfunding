@@ -43,6 +43,7 @@ func main() {
 	api.GET("/campaigns/:id", campaignController.FindByID)
 	api.POST("/campaigns", authMiddleware, campaignController.Create)
 	api.PUT("/campaigns/:id", authMiddleware, campaignController.Update)
+	api.POST("/campaigns/image", authMiddleware, campaignController.UploadImage)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)
