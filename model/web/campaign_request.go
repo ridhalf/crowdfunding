@@ -15,6 +15,6 @@ type CampaignRequestCreate struct {
 }
 type CampaignImageCreate struct {
 	CampaignID int         `form:"campaign_id" binding:"required"`
-	IsPrimary  bool        `form:"is_primary" binding:"required"`
+	IsPrimary  bool        `form:"is_primary" `
 	User       domain.User `json:"user"`
 }
