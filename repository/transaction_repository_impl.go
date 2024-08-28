@@ -24,3 +24,12 @@ func (repository TransactionRepositoryImpl) FindByCampaignID(campaignID int) ([]
 	}
 	return transactions, nil
 }
+
+func (repository TransactionRepositoryImpl) FindByUserID(userID int) ([]domain.Transaction, error) {
+	var transactions []domain.Transaction
+	err := repository.db.Preload("Campaign.CampaignImages", "campaign_images.is_primary = 1").Where("user_id = ?", userID).Find(&transactions).Error
+	if err != nil {
+		return helper.ResultOrError(transactions, err)
+	}
+	return transactions, nil
+}

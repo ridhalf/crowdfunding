@@ -37,3 +37,11 @@ func (service TransactionServiceImpl) FindByCampaignID(request web.TrasactionReq
 	}
 	return transactions, nil
 }
+
+func (service TransactionServiceImpl) FindByUserID(userID int) ([]domain.Transaction, error) {
+	transactions, err := service.transactionRepository.FindByUserID(userID)
+	if err != nil {
+		return helper.ResultOrError(transactions, err)
+	}
+	return transactions, nil
+}

@@ -39,6 +39,17 @@ func (controller TransactionControllerImpl) FindByCampaignID(ctx *gin.Context) {
 	result := helper.Ok("list all transactions", response)
 	ctx.JSON(http.StatusOK, result)
 }
+func (controller TransactionControllerImpl) FindByUserID(ctx *gin.Context) {
+	user := ctx.MustGet("user").(domain.User)
+	transactions, err := controller.transactionService.FindByUserID(user.ID)
+	if err != nil {
+		controller.failedTransactions(ctx, false)
+		return
+	}
+	response := web.ToTransactionResponseUsers(transactions)
+	result := helper.Ok("list all transactions", response)
+	ctx.JSON(http.StatusOK, result)
+}
 func (controller TransactionControllerImpl) failedTransactions(ctx *gin.Context, forbidden bool) {
 	if forbidden {
 		response := helper.Forbidden("user is not the owner of the campaign", nil)

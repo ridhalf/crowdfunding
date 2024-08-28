@@ -10,6 +10,7 @@ type Transaction struct {
 	Status     string    `json:"status"`
 	Code       int       `json:"code"`
 	User       User      `json:"user"`
+	Campaign   Campaign  `json:"campaign"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }
