@@ -23,7 +23,7 @@ func NewTransactionService(transactionRepository repository.TransactionRepositor
 	}
 }
 
-func (service TransactionServiceImpl) FindByCampaignID(request web.TrasactionRequestByCampaignID) ([]domain.Transaction, error) {
+func (service TransactionServiceImpl) FindByCampaignID(request web.TransactionRequestByCampaignID) ([]domain.Transaction, error) {
 	var transactions []domain.Transaction
 	campaign, err := service.campaignRepository.FindByID(request.CampaignID)
 	if err != nil {

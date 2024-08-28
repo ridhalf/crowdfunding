@@ -6,7 +6,7 @@ import (
 )
 
 type TransactionService interface {
-	FindByCampaignID(request web.TrasactionRequestByCampaignID) ([]domain.Transaction, error)
+	FindByCampaignID(request web.TransactionRequestByCampaignID) ([]domain.Transaction, error)
 	FindByUserID(userID int) ([]domain.Transaction, error)
 	Create(request web.TransactionRequestCreate) (domain.Transaction, error)
 }

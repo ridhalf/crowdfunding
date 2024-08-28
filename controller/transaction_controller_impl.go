@@ -20,7 +20,7 @@ func NewTransactionController(transactionService service.TransactionService) Tra
 }
 
 func (controller TransactionControllerImpl) FindByCampaignID(ctx *gin.Context) {
-	var request web.TrasactionRequestByCampaignID
+	var request web.TransactionRequestByCampaignID
 	err := ctx.ShouldBindUri(&request)
 	if err != nil {
 		controller.failedTransactions(ctx, false)

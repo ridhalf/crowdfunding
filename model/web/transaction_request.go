@@ -4,7 +4,7 @@ import (
 	"crowdfunding/model/domain"
 )
 
-type TrasactionRequestByCampaignID struct {
+type TransactionRequestByCampaignID struct {
 	CampaignID int         `uri:"id" binding:"required"`
 	User       domain.User `json:"user"`
 }

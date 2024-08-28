@@ -2,12 +2,11 @@ package test
 
 import (
 	"fmt"
-	"github.com/gosimple/slug"
-	"strconv"
 	"testing"
+	"time"
 )
 
 func TestSlug(t *testing.T) {
-	s := slug.Make("Foo Faa" + "-" + strconv.Itoa(1))
-	fmt.Println(s)
+	now := time.Now()
+	fmt.Println(now.Format("2006-01-02 15:04:05"))
 }
