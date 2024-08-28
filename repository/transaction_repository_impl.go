@@ -33,3 +33,19 @@ func (repository TransactionRepositoryImpl) FindByUserID(userID int) ([]domain.T
 	}
 	return transactions, nil
 }
+
+func (repository TransactionRepositoryImpl) Create(transaction domain.Transaction) (domain.Transaction, error) {
+	err := repository.db.Create(&transaction).Error
+	if err != nil {
+		return helper.ResultOrError(transaction, err)
+	}
+	return transaction, nil
+}
+
+func (repository TransactionRepositoryImpl) Update(transaction domain.Transaction) (domain.Transaction, error) {
+	err := repository.db.Save(&transaction).Error
+	if err != nil {
+		return helper.ResultOrError(transaction, err)
+	}
+	return transaction, nil
+}

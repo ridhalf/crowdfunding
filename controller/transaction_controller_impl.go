@@ -50,6 +50,27 @@ func (controller TransactionControllerImpl) FindByUserID(ctx *gin.Context) {
 	result := helper.Ok("list all transactions", response)
 	ctx.JSON(http.StatusOK, result)
 }
+
+func (controller TransactionControllerImpl) Create(ctx *gin.Context) {
+	var transaction web.TransactionRequestCreate
+	err := ctx.ShouldBindJSON(&transaction)
+	if err != nil {
+		result := helper.UnprocessableEntity("failed to create transaction", err)
+		ctx.JSON(http.StatusUnprocessableEntity, result)
+		return
+	}
+	user := ctx.MustGet("user").(domain.User)
+	transaction.User = user
+	create, err := controller.transactionService.Create(transaction)
+	if err != nil {
+		result := helper.UnprocessableEntity("failed to create campaign", err)
+		ctx.JSON(http.StatusUnprocessableEntity, result)
+	}
+	response := web.ToTransactionResponseCreate(create)
+	result := helper.Ok("save campaign", response)
+	ctx.JSON(http.StatusOK, result)
+}
+
 func (controller TransactionControllerImpl) failedTransactions(ctx *gin.Context, forbidden bool) {
 	if forbidden {
 		response := helper.Forbidden("user is not the owner of the campaign", nil)

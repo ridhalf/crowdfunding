@@ -8,7 +8,8 @@ type Transaction struct {
 	UserID     int       `json:"user_id"`
 	Amount     int       `json:"amount"`
 	Status     string    `json:"status"`
-	Code       int       `json:"code"`
+	Code       string    `json:"code"`
+	PaymentURL string    `json:"payment_url"`
 	User       User      `json:"user"`
 	Campaign   Campaign  `json:"campaign"`
 	CreatedAt  time.Time `json:"created_at"`

@@ -23,7 +23,8 @@ func main() {
 	//services
 	userService := service.NewUserServiceImpl(userRepository)
 	campaignService := service.NewCampaignService(campaignRepository)
-	transactionService := service.NewTransactionService(transactionRepository, campaignRepository)
+	paymentService := service.NewPaymentService()
+	transactionService := service.NewTransactionService(transactionRepository, campaignRepository, paymentService)
 	//middleware
 	authJwt := auth.NewJwtService()
 	authMiddleware := middleware.AuthMiddleware(authJwt, userService)
@@ -49,6 +50,7 @@ func main() {
 
 	api.GET("/campaigns/:id/transactions", authMiddleware, transactionController.FindByCampaignID)
 	api.GET("/transactions", authMiddleware, transactionController.FindByUserID)
+	api.POST("/transactions", authMiddleware, transactionController.Create)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)

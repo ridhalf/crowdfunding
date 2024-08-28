@@ -6,17 +6,20 @@ import (
 	"crowdfunding/model/web"
 	"crowdfunding/repository"
 	"errors"
+	"strconv"
 )
 
 type TransactionServiceImpl struct {
 	transactionRepository repository.TransactionRepository
 	campaignRepository    repository.CampaignRepository
+	paymentService        PaymentService
 }
 
-func NewTransactionService(transactionRepository repository.TransactionRepository, campaignRepository repository.CampaignRepository) TransactionService {
+func NewTransactionService(transactionRepository repository.TransactionRepository, campaignRepository repository.CampaignRepository, paymentService PaymentService) TransactionService {
 	return &TransactionServiceImpl{
 		transactionRepository: transactionRepository,
 		campaignRepository:    campaignRepository,
+		paymentService:        paymentService,
 	}
 }
 
@@ -44,4 +47,32 @@ func (service TransactionServiceImpl) FindByUserID(userID int) ([]domain.Transac
 		return helper.ResultOrError(transactions, err)
 	}
 	return transactions, nil
+}
+
+func (service TransactionServiceImpl) Create(request web.TransactionRequestCreate) (domain.Transaction, error) {
+	transaction := domain.Transaction{
+		CampaignID: request.CampaignID,
+		Amount:     request.Amount,
+		UserID:     request.User.ID,
+		Status:     helper.PENDING,
+	}
+	create, err := service.transactionRepository.Create(transaction)
+	if err != nil {
+		return helper.ResultOrError(create, err)
+	}
+	payment := domain.Payment{
+		ID:     create.ID,
+		Amount: create.Amount,
+	}
+	url, err := service.paymentService.GetPaymentUrl(payment, request.User)
+	if err != nil {
+		return create, err
+	}
+	create.PaymentURL = url
+	create.Code = helper.ORDER_FORMAT + strconv.Itoa(create.ID)
+	update, err := service.transactionRepository.Update(create)
+	if err != nil {
+		return helper.ResultOrError(transaction, err)
+	}
+	return update, nil
 }
