@@ -7,4 +7,5 @@ type UserController interface {
 	Login(ctx *gin.Context)
 	IsEmailAvailable(ctx *gin.Context)
 	UploadAvatar(ctx *gin.Context)
+	FetchUser(ctx *gin.Context)
 }

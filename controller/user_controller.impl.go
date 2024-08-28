@@ -134,6 +134,14 @@ func (controller *UserControllerImpl) UploadAvatar(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 	return
 }
+
+func (controller *UserControllerImpl) FetchUser(ctx *gin.Context) {
+	user := ctx.MustGet("user").(domain.User)
+	response := web.ToUserResponse(user, "")
+	result := helper.Ok("avatar uploaded successfully", response)
+	ctx.JSON(http.StatusOK, result)
+}
+
 func (controller *UserControllerImpl) uploadAvatarFailedResponse(ctx *gin.Context) {
 	data := gin.H{"is_uploaded": false}
 	response := helper.BadRequest("upload avatar failed", data)
