@@ -8,6 +8,7 @@ type UserResponse struct {
 	Occupation string `json:"occupation"`
 	Email      string `json:"email"`
 	Token      string `json:"token"`
+	ImageURL   string `json:"image_url"`
 }
 
 func ToUserResponse(user domain.User, token string) UserResponse {
@@ -17,5 +18,6 @@ func ToUserResponse(user domain.User, token string) UserResponse {
 		Occupation: user.Occupation,
 		Email:      user.Email,
 		Token:      token,
+		ImageURL:   user.AvatarFileName,
 	}
 }

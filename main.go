@@ -45,6 +45,7 @@ func main() {
 	api.POST("/users/login", userController.Login)
 	api.POST("/users/email_checker", userController.IsEmailAvailable)
 	api.POST("/users/avatar", authMiddleware, userController.UploadAvatar)
+	api.GET("/users/fetch", authMiddleware, userController.FetchUser)
 
 	api.GET("/campaigns", campaignController.FindAll)
 	api.GET("/campaigns/:id", campaignController.FindByID)
