@@ -8,6 +8,7 @@ import (
 	"crowdfunding/middleware"
 	"crowdfunding/repository"
 	"crowdfunding/service"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,6 +35,9 @@ func main() {
 	campaignController := controller.NewCampaignController(campaignService)
 	transactionController := controller.NewTransactionController(transactionService, paymentService)
 	router := gin.Default()
+	//blocked by cors policy
+	router.Use(cors.Default())
+	//blocked by cors policy
 	router.Static("/images", "./images")
 
 	api := router.Group("/api/v1")
