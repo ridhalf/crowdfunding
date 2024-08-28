@@ -49,3 +49,13 @@ func (repository TransactionRepositoryImpl) Update(transaction domain.Transactio
 	}
 	return transaction, nil
 }
+
+func (repository TransactionRepositoryImpl) FindByID(ID int) (domain.Transaction, error) {
+	var transaction domain.Transaction
+	err := repository.db.Where("id = ?", ID).Find(&transaction).Error
+	if err != nil {
+		return helper.ResultOrError(transaction, err)
+	}
+	return transaction, nil
+
+}

@@ -11,11 +11,13 @@ import (
 
 type TransactionControllerImpl struct {
 	transactionService service.TransactionService
+	paymentService     service.PaymentService
 }
 
-func NewTransactionController(transactionService service.TransactionService) TransactionController {
+func NewTransactionController(transactionService service.TransactionService, paymentService service.PaymentService) TransactionController {
 	return &TransactionControllerImpl{
 		transactionService: transactionService,
+		paymentService:     paymentService,
 	}
 }
 
@@ -68,6 +70,24 @@ func (controller TransactionControllerImpl) Create(ctx *gin.Context) {
 	}
 	response := web.ToTransactionResponseCreate(create)
 	result := helper.Ok("save campaign", response)
+	ctx.JSON(http.StatusOK, result)
+}
+
+func (controller TransactionControllerImpl) GetNotification(ctx *gin.Context) {
+	var request web.TransactionRequestNotification
+	err := ctx.ShouldBindJSON(&request)
+	if err != nil {
+		result := helper.BadRequest("failed to process notification", err)
+		ctx.JSON(http.StatusBadRequest, result)
+		return
+	}
+	err = controller.paymentService.ProcessPayment(request)
+	if err != nil {
+		result := helper.BadRequest("failed to process notification", err)
+		ctx.JSON(http.StatusBadRequest, result)
+		return
+	}
+	result := helper.Ok("successfully notification", nil)
 	ctx.JSON(http.StatusOK, result)
 }
 

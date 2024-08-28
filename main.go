@@ -23,7 +23,7 @@ func main() {
 	//services
 	userService := service.NewUserServiceImpl(userRepository)
 	campaignService := service.NewCampaignService(campaignRepository)
-	paymentService := service.NewPaymentService()
+	paymentService := service.NewPaymentService(transactionRepository, campaignRepository)
 	transactionService := service.NewTransactionService(transactionRepository, campaignRepository, paymentService)
 	//middleware
 	authJwt := auth.NewJwtService()
@@ -32,7 +32,7 @@ func main() {
 	//controllers
 	userController := controller.NewUserController(userService, authJwt)
 	campaignController := controller.NewCampaignController(campaignService)
-	transactionController := controller.NewTransactionController(transactionService)
+	transactionController := controller.NewTransactionController(transactionService, paymentService)
 	router := gin.Default()
 	router.Static("/images", "./images")
 
@@ -51,6 +51,7 @@ func main() {
 	api.GET("/campaigns/:id/transactions", authMiddleware, transactionController.FindByCampaignID)
 	api.GET("/transactions", authMiddleware, transactionController.FindByUserID)
 	api.POST("/transactions", authMiddleware, transactionController.Create)
+	api.POST("/transactions/notification", transactionController.GetNotification)
 
 	err := router.Run("localhost:3000")
 	helper.PanicIfError(err)

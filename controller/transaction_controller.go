@@ -6,4 +6,5 @@ type TransactionController interface {
 	FindByCampaignID(ctx *gin.Context)
 	FindByUserID(ctx *gin.Context)
 	Create(ctx *gin.Context)
+	GetNotification(ctx *gin.Context)
 }

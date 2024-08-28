@@ -7,4 +7,5 @@ type TransactionRepository interface {
 	FindByUserID(userID int) ([]domain.Transaction, error)
 	Create(transaction domain.Transaction) (domain.Transaction, error)
 	Update(transaction domain.Transaction) (domain.Transaction, error)
+	FindByID(ID int) (domain.Transaction, error)
 }
